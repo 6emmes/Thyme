@@ -2061,7 +2061,7 @@ void W3DModelDraw::Set_Model_State(ModelConditionInfo const *new_state)
     const ModelConditionInfo *next = nullptr;
 
     if (m_curState != nullptr && new_state != nullptr) {    //if both states exist
-        if ( m_curState != nullptr && m_nextState == new_state) {
+        if (m_nextState == new_state) {
 #ifdef GAME_DEBUG_STRUCTS
             if (Get_Drawable() != nullptr) {
                 if (Get_Drawable()->Get_Object() != nullptr) {
