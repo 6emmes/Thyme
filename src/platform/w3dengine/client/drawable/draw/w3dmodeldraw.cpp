@@ -2059,9 +2059,18 @@ void W3DModelDraw::Set_Model_State(ModelConditionInfo const *new_state)
 #endif
 
     const ModelConditionInfo *next = nullptr;
+<<<<<<< Updated upstream
 
     if (m_curState != nullptr && new_state != nullptr) {    //if both states exist
         if (m_nextState == new_state) {
+=======
+    // if both states exist
+    if (m_curState != nullptr && new_state != nullptr) {
+        // ^first condition is unnecessary
+        // if both states are equal
+        if (m_curState == new_state && m_nextState == nullptr || m_curState != nullptr && m_nextState == new_state) {
+            //^single m_curState == new_state is sufficient
+>>>>>>> Stashed changes
 #ifdef GAME_DEBUG_STRUCTS
             if (Get_Drawable() != nullptr) {
                 if (Get_Drawable()->Get_Object() != nullptr) {
@@ -2075,9 +2084,10 @@ void W3DModelDraw::Set_Model_State(ModelConditionInfo const *new_state)
             }
 #endif
 
+            // return early becasue state is not changing
             return;
         }
-
+        // new state allows animation to finish
         if (new_state != m_curState && new_state->m_allowToFinishKey != NAMEKEY_INVALID
             && new_state->m_allowToFinishKey == m_curState->m_transitionKey && m_renderObject != nullptr
             && !Is_Animation_Complete(m_renderObject)) {
@@ -2096,12 +2106,15 @@ void W3DModelDraw::Set_Model_State(ModelConditionInfo const *new_state)
 
             m_nextState = new_state;
             m_loopDuration = -1;
+            //return early to allow animation to finish
             return;
         }
-
+        //unnecessary condition
         if (new_state != m_curState) {
+            //if both states are animations
             if (m_curState->m_transitionKey != NAMEKEY_INVALID) {
                 if (new_state->m_transitionKey != NAMEKEY_INVALID) {
+                    //^both ifs can be merged with &&
                     const ModelConditionInfo *state =
                         Find_Transition_For_Sig(Make_Transition(m_curState->m_transitionKey, new_state->m_transitionKey));
 
@@ -2135,9 +2148,10 @@ void W3DModelDraw::Set_Model_State(ModelConditionInfo const *new_state)
 
     Stop_Client_Particle_Systems();
     Hide_All_Muzzle_Flashes(new_state, m_renderObject);
-
-    if (m_curState == nullptr || new_state->m_modelName != m_curState->m_modelName
-        || Turret_Names_Differ(new_state, m_curState)) {
+    //if model gains initial state || model changes || turret changes
+    
+     if (m_curState == nullptr || new_state->m_modelName != m_curState->m_modelName
+      || Turret_Names_Differ(new_state, m_curState)) {
         Matrix3D tm;
         Nuke_Current_Render(&tm);
         Drawable *drawable = Get_Drawable();
